@@ -1,0 +1,146 @@
+/* General body styling */
+/* General body styling */
+body {
+  background: linear-gradient(to bottom, #e6f7ff, #ffffff);
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 100vh; /* Обеспечивает покрытие всей высоты экрана */
+  background-attachment: fixed; /* Фиксирует градиент */
+  background-repeat: no-repeat; /* Убирает повторения */
+}
+
+/* Container styling */
+.container {
+  margin: 20px auto;
+  max-width: 90%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border: 1px solid #e0f0f6;
+  transition: all 0.3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .container {
+      max-width: 600px;
+      padding: 30px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+      max-width: 800px;
+      padding: 40px;
+  }
+}
+
+/* Form styling */
+form {
+  margin-top: 20px;
+}
+
+form .form-control {
+  border-radius: 5px;
+  border: 1px solid #cce4ec;
+  box-shadow: none;
+  padding: 10px;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #f9fdfd;
+}
+
+form .form-control:focus {
+  border-color: #4cafb0;
+  box-shadow: 0px 0px 8px rgba(76, 175, 176, 0.4);
+}
+
+form label {
+  font-weight: bold;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Buttons styling */
+.btn-primary {
+  background-color: #4cafb0;
+  border-color: #4cafb0;
+  color: #ffffff;
+  transition: all 0.3s ease-in-out;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #3b9d91;
+  border-color: #3b9d91;
+}
+
+.btn-outline-primary {
+  color: #4cafb0;
+  border-color: #4cafb0;
+  transition: all 0.3s ease-in-out;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.btn-outline-primary:hover {
+  color: #ffffff;
+  background-color: #4cafb0;
+  border-color: #4cafb0;
+}
+
+/* Welcome message */
+h1 {
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1.mb-5 {
+  margin-bottom: 40px;
+}
+
+/* Flash messages */
+.flash-message {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #d1d1d1;
+  border-radius: 5px;
+  background-color: #e0f7f4;
+  color: #00796b;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 576px) {
+  h1 {
+      font-size: 1.2rem;
+  }
+
+  .btn-primary,
+  .btn-outline-primary {
+      padding: 8px 16px;
+      font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 400px) {
+  h1 {
+      font-size: 1rem;
+  }
+
+  .btn-primary,
+  .btn-outline-primary {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+  }
+}

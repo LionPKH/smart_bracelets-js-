@@ -1,0 +1,124 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #e6f7ff, #ffffff);
+    margin: 0;
+    padding: 0;
+    color: #333;
+    box-sizing: border-box;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    color: #333;
+    font-size: 2rem;
+}
+
+/* Стиль формы */
+form {
+    width: 100%;
+    max-width: 400px; /* Ограничение ширины формы */
+    margin: 50px auto;
+    background: #ffffff;
+    border: 1px solid #e0f0f6;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Лёгкая тень для формы */
+}
+
+/* Метки формы */
+form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+/* Поля ввода */
+form input[type="text"],
+form input[type="date"],
+form input[type="tel"],
+form input[type="email"],
+form textarea,
+form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    background: #f9fdfd;
+    transition: border-color 0.3s ease;
+}
+
+/* Фокус на полях ввода */
+form input:focus,
+form textarea:focus,
+form select:focus {
+    border-color: #4cafb0;
+    box-shadow: 0 0 5px rgba(76, 175, 176, 0.5);
+    outline: none;
+}
+
+/* Кнопка отправки */
+form button {
+    width: 100%;
+    padding: 12px;
+    background: #4cafb0;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+/* Ховер эффект для кнопки */
+form button:hover {
+    background: #3b9d91;
+}
+
+/* Сообщения об ошибке */
+div[style="color: red;"] {
+    background: #ffe6e6;
+    border: 1px solid #e0b4b4;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(255, 0, 0, 0.1); /* Добавлена лёгкая тень */
+}
+
+/* Список ошибок */
+div[style="color: red;"] ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+div[style="color: red;"] li {
+    margin-bottom: 8px;
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+/* Мобильная адаптивность */
+@media (max-width: 768px) {
+    form {
+        padding: 15px;
+    }
+
+    form input[type="text"],
+    form input[type="date"],
+    form input[type="tel"],
+    form input[type="email"],
+    form textarea,
+    form select {
+        font-size: 0.9rem;
+    }
+
+    form button {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+}

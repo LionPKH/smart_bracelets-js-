@@ -1,0 +1,66 @@
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #e6f7ff; /* Фон медицинской тематики */
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* Заголовки */
+h2, h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+/* Таблица */
+table {
+    width: 100%;
+    max-width: 1200px; /* Максимальная ширина таблицы */
+    margin: 0 auto; /* Центрирование таблицы */
+    border-collapse: collapse;
+    background-color: #ffffff; /* Белый фон таблицы */
+    border-radius: 8px; /* Скругление углов */
+    overflow: hidden; /* Обрезка границ */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень для таблицы */
+}
+
+/* Заголовок таблицы */
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Граница снизу */
+}
+
+/* Заголовки колонок */
+th {
+    background-color: #4cafb0; /* Зелёный фон */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase; /* Верхний регистр текста */
+    letter-spacing: 0.1em;
+}
+
+/* Чётные строки */
+tr:nth-child(even) {
+    background-color: #f9fdfd; /* Светло-голубой оттенок */
+}
+
+/* Ховер эффект */
+tr:hover {
+    background-color: #eaf7f7; /* Ещё светлее при наведении */
+}
+
+/* Мобильная адаптивность */
+@media (max-width: 768px) {
+    table {
+        font-size: 0.9rem; /* Уменьшение текста */
+    }
+
+    th, td {
+        padding: 10px; /* Уменьшение отступов */
+    }
+}

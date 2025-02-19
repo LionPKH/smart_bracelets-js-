@@ -1,0 +1,20 @@
+<%if (table.results.length > 0) { %>
+<h2><%- table.tableName %></h2>
+<table>
+    <tr>
+        <% table.fields.forEach(function(field){ %>
+        <th><%- field.name; %></th>
+        <% }) %>
+    </tr>
+    <% table.results.forEach(function(row){ %>
+    <tr>
+        <% table.fields.forEach(function(field){ %>
+        <td><%- row[field.name]; %></td>
+        <% }) %>
+    </tr>
+    <% }) %>
+</table>
+<br>
+<% } else { %>
+0 results for table: <%- table.tableName %><br>
+<% } %>

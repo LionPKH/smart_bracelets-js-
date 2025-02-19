@@ -3,7 +3,8 @@ var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : '',
-  database : 'smart_bracelets'
+  database : 'smart_bracelets',
+  dateStrings: true
 });
 
 connection.connect((err) => {

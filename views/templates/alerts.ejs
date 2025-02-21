@@ -1,0 +1,58 @@
+<%- include("header") %>
+<h1>Активные оповещения</h1>
+<% if (table && table.results && table.results.length > 0) { %>
+  <table>
+      <tr>
+          <th>Пациент</th>
+          <th>Тип оповещения</th>
+          <th>Сообщение</th>
+          <th>Измерение</th>
+          <th>Время</th>
+          <th>Действия</th>
+      </tr>
+      <% table.results.forEach(function(alert) { %>
+      <tr>
+          <td><%= alert.patient_name %></td>
+          <td><%= alert.alert_type %></td>
+          <td><%= alert.alert_message %></td>
+          <td>
+              <%
+              let measurement;
+              switch (alert.alert_type) {
+                case 'Высокий пульс':
+                case 'Низкий пульс':
+                  measurement = "Пульс: " + alert.heart_rate + " уд/мин";
+                  break;
+                case 'Высокое давление':
+                case 'Низкое давление':
+                  measurement = "Давление: " + alert.blood_pressure_systolic + "/" + alert.blood_pressure_diastolic + " мм рт. ст.";
+                  break;
+                case 'Высокий уровень глюкозы':
+                case 'Низкий уровень глюкозы':
+                  measurement = "Глюкоза: " + alert.blood_glucose_level + " ммоль/л";
+                  break;
+                case 'Высокая температура':
+                case 'Низкая температура':
+                  measurement = "Температура: " + alert.temperature + " °C";
+                  break;
+                default:
+                  measurement = "Измерение недоступно";
+                  break;
+              }
+              %>
+              <%= measurement %>
+          </td>
+          <td><%= alert.alert_timestamp %></td>
+          <td>
+              <form method="post" action="/resolve_alert">
+                  <input type="hidden" name="alert_id" value="<%= alert.alert_id %>">
+                  <button type="submit" class="resolve-btn">Отметить, как решённое</button>
+              </form>
+          </td>
+      </tr>
+      <% }); %>
+  </table>
+<% } else { %>
+  <p>Нет активных оповещений.</p>
+<% } %>
+<%- include("footer") %>

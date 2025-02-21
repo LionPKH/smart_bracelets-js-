@@ -1,6 +1,5 @@
 <%- include("header") %>
 <h1>Patient Measurements</h1>
-<form method="post" action="/save_measurement">
     <table>
         <tr>
             <th>Patient Name</th>
@@ -13,31 +12,32 @@
             <th>Actions</th>
         </tr>
         <% table.results.forEach(function(row){ %>
-        <tr>
-            <td><%- row.patient_name + ' ' + row.patient_surname %></td>
-            <td><%- row.timestamp %></td>
-            <td>
-                <input type = 'text' name="heart_rate[<%- row.measurement_id %>]" value="<%- row.heart_rate %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
-            </td>
-            <td>
-                <input type = 'text' name="blood_pressure_systolic[<%- row.measurement_id %>]" value="<%- row.blood_pressure_systolic %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
-            </td>
-            <td>
-                <input type = 'text' name="blood_pressure_diastolic[<%- row.measurement_id %>]" value="<%- row.blood_pressure_diastolic %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
-            </td>
-            <td>
-                <input type = 'text' name="blood_glucose_level[<%- row.measurement_id %>]" value="<%- row.blood_glucose_level %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
-            </td>
-            <td>
-                <input type = 'text' name="temperature[<%- row.measurement_id %>]" value="<%- row.temperature %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
-            </td>
-            <td> 
-                <button type="button" id="edit-btn-<%- row.measurement_id %>" class="edit-btn" onclick="enableEdit('<%- row.measurement_id %>')">Edit</button>
-                <button type="submit" name="save" value="<%- row.measurement_id %>" id="save-btn-<%- row.measurement_id %>" class="save-btn" style="display: none;">Save</button>
-            </td>
-        </tr>
+        <form method="post" action="/save_measurement">
+            <tr>
+                <td><%- row.patient_name + ' ' + row.patient_surname %></td>
+                <td><%- row.timestamp %></td>
+                <td>
+                    <input type = 'text' name="heart_rate" value="<%- row.heart_rate %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
+                </td>
+                <td>
+                    <input type = 'text' name="blood_pressure_systolic" value="<%- row.blood_pressure_systolic %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
+                </td>
+                <td>
+                    <input type = 'text' name="blood_pressure_diastolic" value="<%- row.blood_pressure_diastolic %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
+                </td>
+                <td>
+                    <input type = 'text' name="blood_glucose_level" value="<%- row.blood_glucose_level %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
+                </td>
+                <td>
+                    <input type = 'text' name="temperature" value="<%- row.temperature %>" readonly data-row="<%- row.measurement_id %>" class="input-field">
+                </td>
+                <td> 
+                    <button type="button" id="edit-btn-<%- row.measurement_id %>" class="edit-btn" onclick="enableEdit('<%- row.measurement_id %>')">Edit</button>
+                    <button type="submit" name="save" value="<%- row.measurement_id %>" id="save-btn-<%- row.measurement_id %>" class="save-btn" style="display: none;">Save</button>
+                </td>
+            </tr>
+        </form>
         <% }) %>
     </table>
-</form>
 
 <%- include('footer'); %>

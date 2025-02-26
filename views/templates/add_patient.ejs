@@ -1,8 +1,8 @@
 <%- include("header") %>
 
 <h1>Добавить данные пациента</h1>
-<link rel="stylesheet" href="assets/css/measurements.css">
-<form method="post" action="">
+<link rel="stylesheet" href="/assets/css/measurements.css">
+<form method="post" action="/private/save_patient">
     <label for="name">Имя:</label><br>
     <input type="text" id="name" name="name" required value="<%= typeof name !== 'undefined' ? name : '' %>"><br><br>
 

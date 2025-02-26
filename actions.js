@@ -10,12 +10,12 @@ async function doLogin(login, password) {
                 var hash = results[0].password_hash.replace('$2y$', '$2a$');
                 bcrypt.compare(password, hash, function (err, correct) {
                     console.log(correct, `user (${login}) is authorized`);
-                    return resolve([results[0].patient_id, results[0].id])
+                    return resolve(results[0])
                 });
             }
             else {
                 console.log(`User (${login}) is not found`)
-                return resolve(false)
+                return resolve(undefined)
             };
 
         });
@@ -115,6 +115,119 @@ async function getPatientMeasurement(patient_id) {
     })
 }
 
+
+async function generateAlerts(measurement) {
+    const alertTypes = await new Promise((resolve, reject) => {
+        database.query(
+            "SELECT alert_type_id, alert_type, metric, min_value, max_value FROM alert_types",
+            (error, results) => {
+                if (error) return reject(error);
+                resolve(results);
+            }
+        );
+    });
+    for (const type of alertTypes) {
+        const metric = type.metric;
+
+        // Проверяем, есть ли данный metric в измерении
+        if (!(metric in measurement)) {
+            continue;
+        }
+
+        const value = parseFloat(measurement[metric]);
+        let trigger = false;
+
+        // Проверяем нижний порог
+        if (type.min_value !== null && value < parseFloat(type.min_value)) {
+            trigger = true;
+        }
+
+        // Проверяем верхний порог
+        if (type.max_value !== null && value > parseFloat(type.max_value)) {
+            trigger = true;
+        }
+
+        if (trigger) {
+            // Генерируем сообщение оповещения
+            const alertMessage = `${type.alert_type} обнаружено у пациента ID: ${measurement.patient_id}`;
+
+            try {
+                await new Promise((resolve, reject) => {
+                    database.query(
+                        `INSERT INTO alerts (patient_id, measurement_id, alert_type_id, alert_message) 
+                         VALUES (?, ?, ?, ?)`,
+                        [
+                            measurement.patient_id,
+                            measurement.measurement_id,
+                            type.alert_type_id,
+                            alertMessage,
+                        ],
+                        (error, results) => {
+                            if (error) {
+                                console.error("Ошибка при вставке оповещения:", error);
+                                return reject(error);
+                            }
+                            resolve(results);
+                        }
+                    );
+                });
+            } catch (error) {
+                console.error("Ошибка при создании оповещения:", error);
+            }
+        }
+    }
+}
+
+async function generateAlertsForAllPatients() {
+    // Удаляем все существующие нерешённые оповещения
+    await new Promise((resolve, reject) => {
+        database.query("DELETE FROM alerts", (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+
+    // Получаем список всех пациентов
+    const patients = await new Promise((resolve, reject) => {
+        database.query("SELECT patient_id FROM patients", (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+
+    for (const patient of patients) {
+        const patientId = patient.patient_id;
+
+        // Получаем последнее измерение для пациента
+        const measurement = await new Promise((resolve, reject) => {
+            database.query(
+                `SELECT m.*, b.patient_id FROM measurements m
+                     JOIN medical_bracelets b ON m.bracelet_id = b.bracelet_id
+                     WHERE b.patient_id = ? 
+                     ORDER BY m.timestamp DESC LIMIT 1`,
+                [patientId],
+                (error, results) => {
+                    if (error) return reject(error);
+                    resolve(results[0] || null);
+                }
+            );
+        });
+
+        if (measurement) {
+            // Добавляем patient_id в объект измерения
+            measurement.patient_id = patientId;
+
+            // Генерируем оповещения для этого измерения
+            await generateAlerts(measurement);
+        }
+    }
+
+}
+
+
+
+
+
 exports.doLogin = doLogin
 exports.doRegister = doRegister
 exports.getData = getData
@@ -124,3 +237,4 @@ exports.getAlerts = getAlerts
 exports.getPatientData = getPatientData
 exports.getPatientAlerts = getPatientAlerts
 exports.getPatientMeasurement = getPatientMeasurement
+exports.generateAlertsForAllPatients = generateAlertsForAllPatients

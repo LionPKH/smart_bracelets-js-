@@ -1,18 +1,20 @@
-<?php include "includes/header.php" ?>
+<%- include("header") %>
 
 <h1>Мой аккаунт</h1>
 
-<?php if ($user['patient_id']): ?>
-    <p><strong>Имя:</strong> <?php echo htmlspecialchars($user['name']); ?></p>
-    <p><strong>Фамилия:</strong> <?php echo htmlspecialchars($user['surname']); ?></p>
-    <p><strong>Пол:</strong> <?php echo htmlspecialchars($user['gender']); ?></p>
-    <p><strong>Дата рождения:</strong> <?php echo htmlspecialchars($user['date_of_birth']); ?></p>
-    <p><strong>Телефон:</strong> <?php echo htmlspecialchars($user['phone']); ?></p>
-    <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-    <p><strong>Адрес:</strong> <?php echo htmlspecialchars($user['address']); ?></p>
+<% if (data.results.length > 0) { 
+    let user = data.results[0]; 
+%>
+    <p><strong>Имя:</strong> <%= user.name %></p>
+    <p><strong>Фамилия:</strong> <%= user.surname %></p>
+    <p><strong>Пол:</strong> <%= user.gender %></p>
+    <p><strong>Дата рождения:</strong> <%= user.date_of_birth %></p>
+    <p><strong>Телефон:</strong> <%= user.phone %></p>
+    <p><strong>Email:</strong> <%= user.email %></p>
+    <p><strong>Адрес:</strong> <%= user.address %></p>
 
     <h2>Измерения пациента</h2>
-    <?php if (!empty($measurements)): ?>
+    <% if (measurements.results.length > 0) { %>
         <table>
             <tr>
                 <th>Время</th>
@@ -23,24 +25,24 @@
                 <th>Температура</th>
                 <th>Браслет</th>
             </tr>
-            <?php foreach ($measurements as $measurement): ?>
+            <% measurements.results.forEach(measurement => { %>
                 <tr>
-                    <td><?php echo htmlspecialchars($measurement['timestamp']); ?></td>
-                    <td><?php echo htmlspecialchars($measurement['heart_rate']); ?></td>
-                    <td><?php echo htmlspecialchars($measurement['blood_pressure_systolic']); ?></td>
-                    <td><?php echo htmlspecialchars($measurement['blood_pressure_diastolic']); ?></td>
-                    <td><?php echo htmlspecialchars($measurement['blood_glucose_level']); ?></td>
-                    <td><?php echo htmlspecialchars($measurement['temperature']); ?></td>
-                    <td><?php echo htmlspecialchars($measurement['serial_number'] . " (" . $measurement['model'] . ")"); ?></td>
+                    <td><%= measurement.timestamp %></td>
+                    <td><%= measurement.heart_rate %></td>
+                    <td><%= measurement.blood_pressure_systolic %></td>
+                    <td><%= measurement.blood_pressure_diastolic %></td>
+                    <td><%= measurement.blood_glucose_level %></td>
+                    <td><%= measurement.temperature %></td>
+                    <td><%= measurement.serial_number %> (<%= measurement.model %>)</td>
                 </tr>
-            <?php endforeach; ?>
+            <% }); %>
         </table>
-    <?php else: ?>
+    <% } else { %>
         <p>Нет доступных измерений.</p>
-    <?php endif; ?>
+    <% } %>
 
     <h2>Активные оповещения</h2>
-    <?php if (!empty($alerts)): ?>
+    <% if (alerts.results.length > 0) { %>
         <table>
             <tr>
                 <th>Тип оповещения</th>
@@ -48,59 +50,60 @@
                 <th>Значение</th>
                 <th>Время</th>
             </tr>
-            <?php foreach ($alerts as $alert): ?>
+            <% alerts.results.forEach(alert => { %>
                 <tr>
-                    <td><?php echo htmlspecialchars($alert['alert_type']); ?></td>
-                    <td><?php echo htmlspecialchars($alert['alert_message']); ?></td>
+                    <td><%= alert.alert_type %></td>
+                    <td><%= alert.alert_message %></td>
                     <td>
-                        <?php
-                        // Отображаем значение измерения в зависимости от типа оповещения
-                        switch ($alert['alert_type']) {
+                        <% 
+                        let measurement;
+                        switch (alert.alert_type) {
                             case 'Высокий пульс':
                             case 'Низкий пульс':
-                                echo "Пульс: " . htmlspecialchars($alert['heart_rate']) . " уд/мин";
+                                measurement = `Пульс: ${alert.heart_rate} уд/мин`;
                                 break;
                             case 'Высокое давление':
                             case 'Низкое давление':
-                                echo "Давление: " . htmlspecialchars($alert['blood_pressure_systolic']) . "/" . htmlspecialchars($alert['blood_pressure_diastolic']) . " мм рт. ст.";
+                                measurement = `Давление: ${alert.blood_pressure_systolic}/${alert.blood_pressure_diastolic} мм рт. ст.`;
                                 break;
                             case 'Высокий уровень глюкозы':
                             case 'Низкий уровень глюкозы':
-                                echo "Глюкоза: " . htmlspecialchars($alert['blood_glucose_level']) . " ммоль/л";
+                                measurement = `Глюкоза: ${alert.blood_glucose_level} ммоль/л`;
                                 break;
                             case 'Высокая температура':
                             case 'Низкая температура':
-                                echo "Температура: " . htmlspecialchars($alert['temperature']) . " °C";
+                                measurement = `Температура: ${alert.temperature} °C`;
                                 break;
                             default:
-                                echo "Измерение недоступно";
+                                measurement = "Измерение недоступно";
                                 break;
                         }
-                        ?>
+                        %>
+                        <%= measurement %>
                     </td>
-                    <td><?php echo htmlspecialchars($alert['alert_timestamp']); ?></td>
+                    <td><%= alert.alert_timestamp %></td>
                 </tr>
-            <?php endforeach; ?>
+            <% }); %>
         </table>
-    <?php else: ?>
+    <% } else { %>
         <p>Нет активных оповещений.</p>
-    <?php endif; ?>
+    <% } %>
 
-<?php else: ?>
-    <p>У вас пока нет данных о пациенте. <a href="add_patient.php">Добавить данные пациента</a></p>
-<?php endif; ?>
+<% } else { %>
+    <p>У вас пока нет данных о пациенте. <a href="/add_patient">Добавить данные пациента</a></p>
+<% } %>
 
 <hr>
 <p>
-    <a href="edit_patient.php" class="account-button account-button-edit">Изменить данные</a>
+    <a href="/edit_patient" class="account-button account-button-edit">Изменить данные</a>
 
-    <form action="do_logout.php" method="post" class="account-button-form" style="display:inline;">
+    <form action="/do_logout" method="post" class="account-button-form" style="display:inline;">
         <button type="submit" class="account-button account-button-logout">Выход</button>
     </form>
 
-    <form action="delete_account.php" method="post" class="account-button-form" style="display:inline;" onsubmit="return confirm('Вы уверены, что хотите удалить аккаунт?')">
+    <form action="/delete_account" method="post" class="account-button-form" style="display:inline;" onsubmit="return confirm('Вы уверены, что хотите удалить аккаунт?')">
         <button type="submit" class="account-button account-button-delete">Удалить аккаунт</button>
     </form>
 </p>
 
-<?php include 'includes/footer.php'; ?>
+<%- include("footer") %>

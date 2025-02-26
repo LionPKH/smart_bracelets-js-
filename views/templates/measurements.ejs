@@ -12,7 +12,7 @@
             <th>Actions</th>
         </tr>
         <% table.results.forEach(function(row){ %>
-        <form method="post" action="/save_measurement">
+        <form method="post" action="/private/save_measurement">
             <tr>
                 <td><%- row.patient_name + ' ' + row.patient_surname %></td>
                 <td><%- row.timestamp %></td>

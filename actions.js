@@ -81,7 +81,10 @@ async function getAlerts() {
 
 async function getPatientData(user_id) {
     return new Promise((resolve, reject) => {
-        database.query('SELECT a.id AS auth_id, a.username, p.patient_id, p.name, p.surname, p.gender, p.date_of_birth, p.phone, p.email, p.address FROM auth a LEFT JOIN patients p ON a.patient_id = p.patient_id WHERE a.id = ?', [user_id], function (error, results, fields) {
+        database.query(`SELECT a.id AS auth_id, a.username, p.patient_id, 
+            p.name, p.surname, p.gender, p.date_of_birth, p.phone, 
+            p.email, p.address FROM auth a LEFT JOIN patients 
+            p ON a.patient_id = p.patient_id WHERE a.id = ?`, [user_id], function (error, results, fields) {
             return resolve({ results: results, fields: fields });
         })
     })
@@ -226,8 +229,234 @@ async function generateAlertsForAllPatients() {
 
 
 
+// Функция для добавления пациента
+async function addPatient(data) {
+    return new Promise((resolve, reject) => {
+        const sql = 'INSERT INTO patients (name, surname, gender, date_of_birth, phone, email, address) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const params = [data.name, data.surname, data.gender, data.date_of_birth, data.phone, data.email, data.address];
+        database.query(sql, params, function (error, results, fields) {
+            if (error) return reject(error);
+            resolve(results.insertId); // Возвращаем ID нового пациента
+        });
+    });
+}
+
+// Функция для поиска пациента по данным
+async function findPatientByDetails(data) {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM patients WHERE name = ? AND surname = ? AND phone = ? AND email = ?';
+        const params = [data.name, data.surname, data.phone, data.email];
+        database.query(sql, params, function (error, results, fields) {
+            if (error) return reject(error);
+            resolve(results[0]); // Возвращаем первого найденного пациента или undefined
+        });
+    });
+}
+
+// Функция для обновления записи авторизации с ID пациента
+async function updateAuthWithPatientId(userId, patientId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'UPDATE auth SET patient_id = ? WHERE id = ?';
+        const params = [patientId, userId];
+        database.query(sql, params, function (error, results, fields) {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+// Функция для добавления медицинского браслета
+async function addMedicalBracelet(data) {
+    return new Promise((resolve, reject) => {
+        const sql = 'INSERT INTO medical_bracelets (patient_id, serial_number, model, activated_date) VALUES (?, ?, ?, ?)';
+        const params = [data.patient_id, data.serial_number, data.model, data.activated_date];
+        database.query(sql, params, function (error, results, fields) {
+            if (error) return reject(error);
+            resolve(results.insertId); // Возвращаем ID нового браслета
+        });
+    });
+}
+
+// Функция для добавления измерений
+async function addMeasurement(data) {
+    return new Promise((resolve, reject) => {
+        const sql = 'INSERT INTO measurements (bracelet_id, timestamp, heart_rate, blood_pressure_systolic, blood_pressure_diastolic, blood_glucose_level, temperature) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const params = [data.bracelet_id, data.timestamp, data.heart_rate, data.blood_pressure_systolic, data.blood_pressure_diastolic, data.blood_glucose_level, data.temperature];
+        database.query(sql, params, function (error, results, fields) {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+async function getUser(userId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM auth WHERE id = ?';
+        const params = [userId];
+        database.query(sql, params, (error, results) => {
+            if (error) return reject(error);
+            resolve(results[0]); // Возвращаем первого найденного пользователя или undefined
+        });
+    });
+}
 
 
+
+async function getUserById(userId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM auth WHERE id = ?';
+        database.query(sql, [userId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results[0]); // Возвращаем первого найденного пользователя или undefined
+        });
+    });
+}
+
+async function deleteAlertsByPatientId(patientId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM alerts WHERE patient_id = ?';
+        database.query(sql, [patientId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+async function getBraceletsByPatientId(patientId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT bracelet_id FROM medical_bracelets WHERE patient_id = ?';
+        database.query(sql, [patientId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results.map(row => row.bracelet_id)); // Возвращаем массив ID браслетов
+        });
+    });
+}
+
+async function deleteMeasurementsByBraceletIds(braceletIds) {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM measurements WHERE bracelet_id IN (?)';
+        database.query(sql, [braceletIds], (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+async function deleteBraceletsByPatientId(patientId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM medical_bracelets WHERE patient_id = ?';
+        database.query(sql, [patientId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+async function deletePatientById(patientId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM patients WHERE patient_id = ?';
+        database.query(sql, [patientId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+async function deleteUserById(userId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM auth WHERE id = ?';
+        database.query(sql, [userId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+
+async function getAlertById(alertId) {
+    return new Promise((resolve, reject) => {
+        const sql = `
+            SELECT a.measurement_id, at.metric
+            FROM alerts a
+            JOIN alert_types at ON a.alert_type_id = at.alert_type_id
+            WHERE a.alert_id = ?
+        `;
+        database.query(sql, [alertId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results[0]); // Возвращаем первое найденное оповещение или undefined
+        });
+    });
+}
+
+async function resolveAlert(alertId) {
+    return new Promise((resolve, reject) => {
+        const sql = 'UPDATE alerts SET resolved = TRUE WHERE alert_id = ?';
+        database.query(sql, [alertId], (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+async function updateMeasurement(measurementId, metric, normalValues) {
+    return new Promise((resolve, reject) => {
+        let sql;
+        let params;
+
+        switch (metric) {
+            case 'heart_rate':
+                sql = 'UPDATE measurements SET heart_rate = ? WHERE measurement_id = ?';
+                params = [normalValues.heart_rate, measurementId];
+                break;
+
+            case 'blood_pressure_systolic':
+            case 'blood_pressure_diastolic':
+                sql = `
+                    UPDATE measurements 
+                    SET blood_pressure_systolic = ?, blood_pressure_diastolic = ? 
+                    WHERE measurement_id = ?
+                `;
+                params = [normalValues.systolic, normalValues.diastolic, measurementId];
+                break;
+
+            case 'blood_glucose_level':
+                sql = 'UPDATE measurements SET blood_glucose_level = ? WHERE measurement_id = ?';
+                params = [normalValues.blood_glucose_level, measurementId];
+                break;
+
+            case 'temperature':
+                sql = 'UPDATE measurements SET temperature = ? WHERE measurement_id = ?';
+                params = [normalValues.temperature, measurementId];
+                break;
+
+            default:
+                return reject(new Error('Неизвестный параметр метрики.'));
+        }
+
+        database.query(sql, params, (error, results) => {
+            if (error) return reject(error);
+            resolve(results);
+        });
+    });
+}
+
+
+exports.updateMeasurement = updateMeasurement
+exports.resolveAlert = resolveAlert
+exports.getAlertById = getAlertById
+exports.deleteUserById = deleteUserById
+exports.deletePatientById = deletePatientById
+exports.deleteBraceletsByPatientId = deleteBraceletsByPatientId
+exports.deleteMeasurementsByBraceletIds = deleteMeasurementsByBraceletIds
+exports.getBraceletsByPatientId = getBraceletsByPatientId
+exports.deleteAlertsByPatientId = deleteAlertsByPatientId
+exports.getUserById = getUserById
+exports.addMeasurement = addMeasurement
+exports.addMedicalBracelet = addMedicalBracelet
+exports.addMedicalBracelet = addMedicalBracelet
+exports.updateAuthWithPatientId = updateAuthWithPatientId
+exports.findPatientByDetails = findPatientByDetails
+exports.addPatient = addPatient
 exports.doLogin = doLogin
 exports.doRegister = doRegister
 exports.getData = getData
@@ -238,3 +467,4 @@ exports.getPatientData = getPatientData
 exports.getPatientAlerts = getPatientAlerts
 exports.getPatientMeasurement = getPatientMeasurement
 exports.generateAlertsForAllPatients = generateAlertsForAllPatients
+exports.getUser = getUser

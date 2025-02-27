@@ -90,18 +90,18 @@
     <% } %>
 
 <% } else { %>
-    <p>У вас пока нет данных о пациенте. <a href="/add_patient">Добавить данные пациента</a></p>
+    <p>У вас пока нет данных о пациенте. <a href="/private/add_patient">Добавить данные пациента</a></p>
 <% } %>
 
 <hr>
 <p>
-    <a href="/edit_patient" class="account-button account-button-edit">Изменить данные</a>
+    <a href="/private/edit_patient" class="account-button account-button-edit">Изменить данные</a>
 
-    <form action="/do_logout" method="post" class="account-button-form" style="display:inline;">
+    <form action="/private/do_logout" method="post" class="account-button-form" style="display:inline;">
         <button type="submit" class="account-button account-button-logout">Выход</button>
     </form>
 
-    <form action="/delete_account" method="post" class="account-button-form" style="display:inline;" onsubmit="return confirm('Вы уверены, что хотите удалить аккаунт?')">
+    <form action="/private/delete_account" method="post" class="account-button-form" style="display:inline;" onsubmit="return confirm('Вы уверены, что хотите удалить аккаунт?')">
         <button type="submit" class="account-button account-button-delete">Удалить аккаунт</button>
     </form>
 </p>

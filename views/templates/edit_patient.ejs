@@ -1,0 +1,45 @@
+<%- include("header") %>
+
+<h1>Редактировать данные пациента</h1>
+<link rel="stylesheet" href="/assets/css/measurements.css">
+
+<% if (errors.length > 0) { %>
+    <div style="color: red;">
+        <ul>
+            <% errors.forEach(err => { %>
+                <li><%= err %></li>
+            <% }) %>
+        </ul>
+    </div>
+<% } %>
+
+<form method="post" action="/private/edit_patient">
+    <label for="name">Имя:</label><br>
+    <input type="text" id="name" name="name" required value="<%= name %>"><br><br>
+
+    <label for="surname">Фамилия:</label><br>
+    <input type="text" id="surname" name="surname" required value="<%= surname %>"><br><br>
+
+    <label for="gender">Пол:</label><br>
+    <select id="gender" name="gender" required>
+        <option value="">Выберите пол</option>
+        <option value="Мужской" <%= gender === 'Мужской' ? 'selected' : '' %>>Мужской</option>
+        <option value="Женский" <%= gender === 'Женский' ? 'selected' : '' %>>Женский</option>
+    </select><br><br>
+
+    <label for="date_of_birth">Дата рождения:</label><br>
+    <input type="date" id="date_of_birth" name="date_of_birth" required value="<%= date_of_birth %>"><br><br>
+
+    <label for="phone">Номер телефона:</label><br>
+    <input type="tel" id="phone" name="phone" required pattern="\+?\d{10,15}" value="<%= phone %>"><br><br>
+
+    <label for="email">Электронная почта:</label><br>
+    <input type="email" id="email" name="email" required value="<%= email %>"><br><br>
+
+    <label for="address">Адрес:</label><br>
+    <textarea id="address" name="address" rows="3" cols="30"><%= address %></textarea><br><br>
+
+    <button type="submit">Сохранить изменения</button>
+</form>
+
+<%- include("footer") %>

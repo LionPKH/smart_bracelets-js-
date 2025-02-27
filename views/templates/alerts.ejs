@@ -44,7 +44,7 @@
           </td>
           <td><%= alert.alert_timestamp %></td>
           <td>
-              <form method="post" action="/resolve_alert">
+              <form method="post" action="/private/resolve_alert">
                   <input type="hidden" name="alert_id" value="<%= alert.alert_id %>">
                   <button type="submit" class="resolve-btn">Отметить, как решённое</button>
               </form>
